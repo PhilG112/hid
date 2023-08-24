@@ -1,0 +1,3 @@
+East
+North
+South
