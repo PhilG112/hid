@@ -8,13 +8,10 @@ import Fmt ( Buildable(..), Builder, (+||), unwordsF, nameF )
 import Fmt.Internal.Core
 
 data Direction = North | East | South | West
-    deriving (Eq, Enum, Bounded, Show, CyclicEnum)
+    deriving (Eq, Enum, Bounded, Show, CyclicEnum, Read)
 
 data Turn = TNone | TLeft | TRight | TAround
-    deriving (Eq, Enum, Bounded, Show)
-
-deriving instance Read Direction
-deriving instance Read Turn
+    deriving (Eq, Enum, Bounded, Show, Read)
 
 class (Eq a, Enum a, Bounded a) => CyclicEnum a where
     cpred :: a -> a
@@ -91,7 +88,11 @@ rotateFromFile start fileName = do
     fmt $ nameF "Intermediate directions" (unwordsF directions)
 
 orientFromFile :: FilePath -> IO ()
-orientFromFile fname = pure ()
+orientFromFile fname = do
+    f <- readFile fname
+    let dirs = map read $ lines f
+        allTurns = orientMany dirs
+    fmt $ nameF "All turns" (unwordsF allTurns) 
 
 every :: (Enum a, Bounded a) => [a]
 every = enumFrom minBound
