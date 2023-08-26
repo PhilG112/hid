@@ -1,16 +1,28 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE StandaloneDeriving #-}
 
-module Ch2.TypeClasses (rotateFromFile, orientFromFile) where
+module Ch2.TypeClasses
+    ( rotateFromFile,
+      orientFromFile,
+      Direction,
+      Turn,
+      randomDirections,
+      randomTurns,
+      orientRotateAgree,
+      allTurnsInUse,
+      rotationsMonoidAgree,
+    )
+where
 
 import Control.Monad (replicateM)
-import Fmt (Buildable (..), Builder, nameF, unwordsF, (+||))
-import Fmt.Internal.Core
+import Data.List (nub, sort)
+import Fmt (Buildable (..), Builder, nameF, unwordsF)
+import Fmt.Internal.Core (fmt, fmtLn, (+||), (||+))
 import System.Random (Random, Uniform, UniformRange, getStdRandom, uniform)
 import System.Random.Stateful (StatefulGen, Uniform (uniformM), uniformRM)
 
+-- |This is a test comment for haddock docs
 data Direction = North | East | South | West
     deriving (Eq, Enum, Bounded, Show, CyclicEnum, Read)
 
@@ -142,3 +154,13 @@ writeRandomFile ::
 writeRandomFile n gen fileName = do
     xs <- gen n
     writeFile fileName $ unlines $ map show xs
+
+allTurnsInUse :: Bool
+allTurnsInUse = sort (nub [orient d1 d2 | d1 <- every, d2 <- every]) == every
+
+rotationsMonoidAgree :: [Turn] -> Bool
+rotationsMonoidAgree ts = and [rotateMany d ts == rotateMany' d ts | d <- every]
+
+orientRotateAgree :: [Direction] -> Bool
+orientRotateAgree [] = True
+orientRotateAgree ds@(d : _) = ds == rotateManySteps d (orientMany ds)

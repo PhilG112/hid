@@ -1,33 +1,18 @@
-module TypeClasses.TypeClassesSpec (spec, spec2) where
+module TypeClasses.TypeClassesSpec (spec) where
 
+import Ch2.TypeClasses (allTurnsInUse, orientRotateAgree, randomDirections, randomTurns, rotationsMonoidAgree)
 import Test.Hspec (Spec, describe, it, shouldBe)
 
 spec :: Spec
 spec = do
-    let square x = x * x :: Int
+    describe "RandomDirections" $ do
+        it "orientRotateAgree" $ do
+            ds <- randomDirections 1000
+            orientRotateAgree ds `shouldBe` True
 
-    describe "strip" $ do
-        it "Test one" $
-            square 4 `shouldBe` 16
+        it "allTurnsInUse" $
+            allTurnsInUse `shouldBe` True
 
-        it "Test two" $
-            square 5 `shouldBe` 25
-
-    describe "strip2" $ do
-        it "Test 3" $
-            square 10 `shouldBe` 100
-
-spec2 :: Spec
-spec2 = do
-    let square x = x * x :: Int
-
-    describe "strip" $ do
-        it "Test one" $
-            square 4 `shouldBe` 16
-
-        it "Test two" $
-            square 5 `shouldBe` 25
-
-    describe "strip2" $ do
-        it "Test 3" $
-            square 10 `shouldBe` 100
+        it "rotationsMonoidAgree" $ do
+            ts <- randomTurns 1000
+            rotationsMonoidAgree ts `shouldBe` False
