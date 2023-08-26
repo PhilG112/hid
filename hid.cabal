@@ -60,13 +60,17 @@ executable hid
 
 library
   import:           common-options
-  exposed-modules:  Ch2.TypeClasses
+  exposed-modules:
+    Ch2.Expr
+    Ch2.TypeClasses
+  
   hs-source-dirs:   src
   build-depends:
-    , base    ^>=4.16.4.0
+    , base       ^>=4.16.4.0
     , fmt
     , random
     , text
+    , text-show
 
   default-language: Haskell2010
 
