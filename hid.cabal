@@ -63,11 +63,14 @@ library
   exposed-modules:
     Ch2.Expr
     Ch2.TypeClasses
-  
+    Ch5.Maybe
+
+  other-modules:    Ch2.Contexts
   hs-source-dirs:   src
   build-depends:
     , base       ^>=4.16.4.0
     , fmt
+    , mtl
     , random
     , text
     , text-show
