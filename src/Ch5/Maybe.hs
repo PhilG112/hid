@@ -27,3 +27,9 @@ type Locations = [(Phone, Location)]
 getLocationByName :: PhoneNumbers -> Locations -> Name -> Maybe Location
 getLocationByName pNums locs name =
     lookup name pNums >>= \phone -> lookup phone locs
+
+getLocationByName' :: PhoneNumbers -> Locations -> Name -> Maybe Location
+getLocationByName' pnumbers locs name =
+    case lookup name pnumbers of
+        Just n -> lookup n locs
+        Nothing -> Nothing
