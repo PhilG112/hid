@@ -12,7 +12,9 @@ type SQL = Text
 data ErrorMsg = WrongFormat Int Text
     deriving (Show)
 
-genSQL txt = traverse processLine (zip [1 ..] $ T.lines txt)
+-- Write it out using their types...
+genSQL :: Text -> Writer [ErrorMsg] SQL
+genSQL txt = T.concat <$> traverse processLine (zip [1 ..] $ T.lines txt)
 
 genInsert :: Text -> Text -> Text
 genInsert s1 s2 =
