@@ -14,3 +14,6 @@ gcdLogSteps a b = gcdM (\a b -> tell [(a, b)]) a b
 
 gcdCountSteps :: Integral a => a -> a -> Writer (Sum Int) a
 gcdCountSteps a b = gcdM (\_ _ -> tell $ Sum 1) a b
+
+gcdCountSteps' :: Integral b => b -> b -> Writer (Sum Int) b
+gcdCountSteps' a b = mapWriter (\(v, w) -> (v, Sum $ length w)) (gcdLogSteps a b)
