@@ -74,6 +74,7 @@ library
     , random
     , text
     , text-show
+    , extra
 
   default-language: Haskell2010
 
