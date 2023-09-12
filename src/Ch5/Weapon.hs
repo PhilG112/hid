@@ -4,7 +4,7 @@ module Ch5.Weapon where
 
 import Control.Monad.State
 import Data.List
-import System.Random (StdGen, Uniform, UniformRange, uniform, newStdGen)
+import System.Random (StdGen, Uniform, UniformRange, newStdGen, uniform)
 import System.Random.Stateful (StatefulGen, Uniform (uniformM), UniformRange (uniformRM))
 
 data Weapon = Rock | Paper | Scissors
@@ -25,7 +25,7 @@ instance UniformRange Weapon where
     uniformRM :: StatefulGen g m => (Weapon, Weapon) -> g -> m Weapon
     uniformRM (lo, hi) rng = do
         res <- uniformRM (fromEnum lo, fromEnum hi) rng
-        pure $ toEnum res
+        return $ toEnum res
 
 instance Uniform Weapon where
     uniformM :: StatefulGen g m => g -> m Weapon
