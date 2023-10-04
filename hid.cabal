@@ -52,7 +52,7 @@ executable hid
   main-is:          Hid.hs
   ghc-options:      -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-    , base  ^>=4.16.4.0
+    , base  ^>=4.17.2.0
     , hid
 
   hs-source-dirs:   app
@@ -68,7 +68,7 @@ library
   other-modules:    Ch2.Contexts
   hs-source-dirs:   src
   build-depends:
-    , base       ^>=4.16.4.0
+    , base       ^>=4.17.2.0
     , fmt
     , mtl
     , random
@@ -84,7 +84,7 @@ test-suite test
   other-modules:      TypeClasses.TypeClassesSpec
   hs-source-dirs:     tests
   build-depends:
-    , base            ^>=4.16.4.0
+    , base            ^>=4.17.2.0
     , hid
     , hspec
     , hspec-discover
