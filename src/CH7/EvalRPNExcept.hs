@@ -9,6 +9,8 @@ import Control.Monad.State
 import Data.Text hiding (length)
 import Data.Text.Internal.Builder (fromText)
 import TextShow (Builder, TextShow (showb))
+import Data.Text.Read
+import Data.Foldable
 
 type EvalM a = ReaderT EnvVars (ExceptT EvalError (State Stack)) a
 
@@ -49,3 +51,28 @@ oneElementOnStack :: EvalM()
 oneElementOnStack = do
     len <- gets (\stack -> length stack)
     when (len /= 1) $ throwError ExtraElements
+
+readVar :: Text -> EvalM Integer
+readVar name = do
+    var <- asks (\s -> lookup name s)
+    case var of
+        Just n -> pure n
+        Nothing -> throwError $ UnkownVar name
+
+readNumber :: Text -> EvalM Integer
+readNumber txt =
+    case decimal txt of
+        Right (n, rest) | Data.Text.null rest -> pure n
+        _ -> throwError $ NotANumber txt
+
+evalRPNOnce :: Text -> EvalM Integer
+evalRPNOnce str =
+    clearStack >> traverse_ step (Data.Text.words str) >> oneElementOnStack >> pop
+    where
+        clearStack = put []
+        step "+" = processTops (+)
+        step "-" = processTops (-)
+        step "*" = processTops (*)
+        step t = read t >>= push
+        processTops op = op <$> pop <*> pop >>= push
+        
