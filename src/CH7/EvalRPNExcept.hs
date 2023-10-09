@@ -8,9 +8,10 @@ import Control.Monad.Reader
 import Control.Monad.State
 import Data.Text hiding (length)
 import Data.Text.Internal.Builder (fromText)
-import TextShow (Builder, TextShow (showb))
+import TextShow (Builder, TextShow (showb, showt))
 import Data.Text.Read
 import Data.Foldable
+import Data.Text.Internal.StrictBuilder
 
 type EvalM a = ReaderT EnvVars (ExceptT EvalError (State Stack)) a
 
@@ -75,4 +76,16 @@ evalRPNOnce str =
         step "*" = processTops (*)
         step t = read t >>= push
         processTops op = op <$> pop <*> pop >>= push
-        
+
+reportEvalResults :: Either EvalError [Builder] -> Text
+reportEvalResults (Left e) = "Error: " <> showt e
+reportEvalResults (Right v) = toText $ unlinesB v
+
+evalRPNMany :: [Text] -> EnvVars -> Text
+evalRPNMany txts env = reportEvalResults $
+    evalState (runExceptT (runReaderT (traverse evalOnce txts) env)) []
+    where
+        evalOnce txt = (Data.Text.Internal.Builder.fromText txt <>) <$>
+            (buildOk <$> evalRPNOnce txt) `catchError` (pure . buildErr)
+        buildOk res = " = " <> showb res
+        buildErr err = " Error: " <> showb err
